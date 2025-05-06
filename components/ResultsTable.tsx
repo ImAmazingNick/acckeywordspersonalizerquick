@@ -56,8 +56,8 @@ export function ResultsTable({ clusters, companyXName, competitors }: ResultsTab
   const totalColumns = 3 + competitors.length;
 
   return (
-    <div className="w-full overflow-hidden rounded-xl border border-gray-200 shadow-sm">
-      <Table className="min-w-full">
+    <div className="w-full overflow-hidden rounded-xl border border-gray-200 shadow-sm results-table-wrapper">
+      <Table className="min-w-full results-table">
         <TableHeader className="bg-purple-900">
           <TableRow>
             <TableHead className="text-white font-semibold py-4 text-base whitespace-nowrap">Keyword Cluster</TableHead>

@@ -146,6 +146,14 @@ export function AccountRow({ account, onUpdate, onDelete, csvColumns = [] }: Acc
   const handleExportToPng = async () => {
     try {
       const tableElementId = `table-${account.id}`;
+      
+      const tableElement = document.getElementById(tableElementId);
+      if (tableElement) {
+        console.log(`Exporting table with ID ${tableElementId}, size: ${tableElement.offsetWidth}x${tableElement.offsetHeight}`);
+      } else {
+        console.error(`Table element with ID ${tableElementId} not found for export`);
+      }
+      
       await exportToPng(tableElementId, account.name);
     } catch (error) {
       console.error("Error exporting to PNG:", error);
@@ -324,7 +332,7 @@ export function AccountRow({ account, onUpdate, onDelete, csvColumns = [] }: Acc
           
           <div id={`account-${account.id}`} className="relative overflow-hidden">
             {account.clusters.length > 0 ? (
-              <div id={`table-${account.id}`}>
+              <div id={`table-${account.id}`} className="export-table-container" data-export-id={`table-${account.id}`}>
                 <ResultsTable
                   clusters={account.clusters}
                   companyXName={account.companyX}
