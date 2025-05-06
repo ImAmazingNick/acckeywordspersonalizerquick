@@ -83,4 +83,28 @@ The application accepts CSV files with the following columns:
 - [Papaparse](https://www.papaparse.com/) - CSV parsing
 - [html2canvas](https://html2canvas.hertzen.com/) - PNG export
 - [React Hook Form](https://react-hook-form.com/) - Form handling
-- [Zod](https://github.com/colinhacks/zod) - Schema validation 
+- [Zod](https://github.com/colinhacks/zod) - Schema validation
+
+## Deployment on Vercel
+
+The application is optimized for deployment on Vercel. The export functionality uses a dual approach:
+
+1. **Server-side rendering with Puppeteer** (when available)
+2. **Client-side fallback with html2canvas** (when Puppeteer fails)
+
+### Vercel Setup
+
+1. Connect your GitHub repository to Vercel
+2. Vercel will automatically detect the Next.js application
+3. Add the following environment variables if needed:
+   - `VERCEL=true` (set automatically by Vercel)
+
+### Export Functionality Notes
+
+The PNG export feature attempts to use Puppeteer on the server for high-quality exports. If that fails (which may happen in some serverless environments), it falls back to using html2canvas directly in the browser.
+
+This ensures the export functionality works in all environments, though quality may vary slightly between the two methods.
+
+## License
+
+MIT 

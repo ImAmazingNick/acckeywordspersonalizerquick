@@ -153,4 +153,8 @@ export async function POST(request: NextRequest) {
       browserInstance = null;
     }
   }
-} 
+}
+
+// Configure the route for extended processing time
+export const dynamic = 'force-dynamic';
+export const maxDuration = 60; // Set maximum duration to 60 seconds 
