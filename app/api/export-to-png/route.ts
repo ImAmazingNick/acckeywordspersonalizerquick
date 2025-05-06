@@ -10,14 +10,23 @@ let browserInstance: Browser | null = null;
 async function getBrowser() {
   if (!browserInstance) {
     browserInstance = await puppeteer.launch({
-      headless: 'new',
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      headless: true,
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-accelerated-2d-canvas',
+        '--no-first-run',
+        '--no-zygote',
+        '--disable-gpu'
+      ],
     });
   }
   return browserInstance;
 }
 
 export async function POST(request: NextRequest) {
+  let browser = null;
   try {
     // Parse the request body
     const data = await request.json();
@@ -85,7 +94,7 @@ export async function POST(request: NextRequest) {
     fs.writeFileSync(tempFile, styledHtml);
 
     // Get the browser instance
-    const browser = await getBrowser();
+    browser = await getBrowser();
     
     // Create a new page
     const page = await browser.newPage();
@@ -101,7 +110,9 @@ export async function POST(request: NextRequest) {
     await page.goto(`file://${tempFile}`, { waitUntil: 'networkidle0' });
     
     // Wait a moment for any animations/styles to apply
-    await page.waitForTimeout(500);
+    await page.evaluate(() => {
+      return new Promise((resolve) => setTimeout(resolve, 500));
+    });
     
     // Find the element by ID
     const element = await page.$(`#${elementId}`);
@@ -135,5 +146,11 @@ export async function POST(request: NextRequest) {
       { error: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
+  } finally {
+    // In serverless environment, make sure to close the browser
+    if (browser && process.env.VERCEL) {
+      await browser.close();
+      browserInstance = null;
+    }
   }
 } 
